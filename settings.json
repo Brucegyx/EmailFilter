@@ -1,0 +1,11 @@
+{
+  "settings": {
+    "clientId": "b5f8f9e1-7475-49fa-a56b-c757d0348a1e",
+    "tenantId": "common",
+    "graphUserScopes": [
+      "user.read",
+      "mail.read",
+      "mail.send"
+    ]
+  }
+}

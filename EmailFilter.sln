@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 25.0.1705.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailFilter", "EmailFilter.csproj", "{80A5C76F-298F-45FF-BC06-EA8ECD66DE10}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{80A5C76F-298F-45FF-BC06-EA8ECD66DE10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80A5C76F-298F-45FF-BC06-EA8ECD66DE10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80A5C76F-298F-45FF-BC06-EA8ECD66DE10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80A5C76F-298F-45FF-BC06-EA8ECD66DE10}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {78E8ECBB-4BE7-4011-8C59-0829002A55CC}
+	EndGlobalSection
+EndGlobal
