@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 public class Configurations {
   public string? ClientId { get; set; }
   public string? TenantId { get; set; }
-  public string[]? GraphUserScope { get; set; }
+  public string[]? GraphUserScopes { get; set; }
 
   public static Configurations LoadConfigurations () {
     IConfiguration config = new ConfigurationBuilder()

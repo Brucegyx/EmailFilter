@@ -4,8 +4,7 @@
     "tenantId": "common",
     "graphUserScopes": [
       "user.read",
-      "mail.read",
-      "mail.send"
+      "mail.readwrite"
     ]
   }
 }

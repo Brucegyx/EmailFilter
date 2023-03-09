@@ -1,21 +1,25 @@
 ﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
 
 var configs = Configurations.LoadConfigurations();
 InitializeGraph(configs);
 
 try {
-  var user = await MSGraph.getUser();
-  Console.WriteLine($"Welcome {user?.DisplayName}");
+  var user = await MSGraphMailService.getUser();
+  Console.WriteLine($"Welcome {user?.DisplayName}, {user?.Mail ?? user?.UserPrincipalName ?? "No Other info retrieved"}");
 } catch (Exception) {
   throw new Exception("Error finding user");
 }
 
-Console.WriteLine("Please enter the domain name you want to filter or enter q to quit.");
 
 int waiting = -1;
 string? userInput = "";
 while (waiting != 0) {
+  if (waiting == 1) {
+    Console.WriteLine("Do you want to delete above emails? Please enter 'Yes' or 'No'");
+  }
+  else {
+    Console.WriteLine("Please enter a domain name which you want to filter on, or enter q to quit.");
+  }
   try {
     userInput = Console.ReadLine();
   } catch (IOException exception){
@@ -28,13 +32,27 @@ while (waiting != 0) {
   }
   if (userInput == "q") {
     waiting = 0;
-    break;
-  } else {
+  } 
+  else if (waiting == 1 && userInput == "Yes") {
     try {
-      await ListEmailsByDomain(5, userInput);
+      DeleteKEmailsByDomain();
+      waiting = -1;
     }
     catch (Exception exception) {
-      Console.WriteLine($"Error: {exception.Message}");
+      Console.WriteLine($"Error: {exception}");
+    }
+  } 
+  else if (waiting == 1  && userInput == "No") {
+    waiting = 1;
+  }
+  else {
+    try {
+      ListKEmailsByDomain(2, userInput);
+      waiting = 1;
+    }
+    catch (Exception exception) {
+      waiting = -1;
+      Console.WriteLine($"Error: {exception}");
     }
   }
 
@@ -43,17 +61,32 @@ while (waiting != 0) {
 Console.WriteLine("Thank you for using the service!");
 
 void InitializeGraph(Configurations configurations) {
-  MSGraph.InitializeForUserAuth(configurations, (info, cancel) => {
+  MSGraphMailService.InitializeForUserAuth(configurations, (info, cancel) => {
     Console.WriteLine(info.Message);
     return Task.FromResult(0);
   });
 }
 
+/*
 string ConstructDomainFilter(string userInput) {
   return "";
 }
+*/
+void ListKEmailsByDomain(int topK , string domainFilter) {
+  try {
+    MSGraphMailService.getTopKMessageByDomain(topK, domainFilter);
+  } 
+  catch (Exception ex) {
+    Console.WriteLine(ex.Message);
+  }
+}
 
-async Task ListEmailsByDomain(int top , string domainFilter) {
-  var messages = await MSGraph.getTopKMessageByDomain(top, domainFilter);
-  Console.WriteLine(messages?.ToString());
+void DeleteKEmailsByDomain() {
+  try {
+    MSGraphMailService.deleteTopKMessageByDomain();
+  } 
+  catch (Exception ex) {
+    Console.WriteLine(ex.Message);
+
+  }
 }
