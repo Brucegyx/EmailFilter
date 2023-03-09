@@ -55,7 +55,7 @@ while (waiting != 0) {
     try {    
       int topK = int.Parse(inputs[1]);
       await ListKEmailsByDomain(topK, domainToFilter);
-      waiting = 1; // indicate user to choose to delete the retreived emails
+      waiting = 1; // indicate user to choose to delete the retrieved emails
     }
     catch (FormatException ex) {
       Console.WriteLine($"Format Error: input {inputs[1]} is not a valid number.");
