@@ -59,6 +59,7 @@ while (waiting != 0) {
     }
     catch (FormatException ex) {
       Console.WriteLine($"Format Error: input {inputs[1]} is not a valid number.");
+      Console.WriteLine($"Error: {ex.Message}");
       waiting = -1;
     }
     catch (Exception exception) {

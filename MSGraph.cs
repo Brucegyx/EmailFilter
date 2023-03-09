@@ -55,7 +55,8 @@ class MSGraphMailService {
       .CreatePageIterator(_graphServiceClient, messages,
        (msg) => {
         _messageIdsToDelete.Add(msg.Id ?? "");
-        Console.WriteLine($"{count + 1}.  Sender from: {msg.Sender?.EmailAddress?.Address}");
+        Console.WriteLine($"{count + 1}. ");
+        Console.WriteLine($"  Sender from: {msg.Sender?.EmailAddress?.Address}");
         Console.WriteLine($"  Subject: {msg.Subject}");
         Console.WriteLine($"  Time received: {msg.ReceivedDateTime}");
         Console.WriteLine($"  Content: {msg.BodyPreview}");
