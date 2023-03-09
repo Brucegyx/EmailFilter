@@ -34,13 +34,13 @@ class MSGraphMailService {
 
   }
 
-  public static async void getTopKMessageByDomain(int maximumTopK, string domain) {
+  public static async Task getTopKMessageByDomain(int maximumTopK, string domain) {
     _ = _graphServiceClient ?? throw new System.NullReferenceException("No graph service client");
     var messages =  await _graphServiceClient.Me.Messages
       .GetAsync(
           requestConfig => {
           requestConfig.QueryParameters.Top = 1;
-          requestConfig.QueryParameters.Select = new string[] { "sender", "subject", "bodyPreview"};
+          requestConfig.QueryParameters.Select = new string[] { "sender", "subject", "receivedDateTime", "bodyPreview"};
           requestConfig.QueryParameters.Count = true;
           requestConfig.QueryParameters.Filter = $"contains(from/emailAddress/address, '{domain}')";
           requestConfig.Headers.Add("ConsistencyLevel","eventual");
@@ -55,18 +55,20 @@ class MSGraphMailService {
       .CreatePageIterator(_graphServiceClient, messages,
        (msg) => {
         _messageIdsToDelete.Add(msg.Id ?? "");
-        Console.WriteLine($"Sender from: {msg.Sender?.EmailAddress?.Address}");
-        Console.WriteLine($"Subject: {msg.Subject}");
-        Console.WriteLine($"Content: {msg.BodyPreview}");
-        if (count == maximumTopK) {return false;}
+        Console.WriteLine($"{count + 1}.  Sender from: {msg.Sender?.EmailAddress?.Address}");
+        Console.WriteLine($"  Subject: {msg.Subject}");
+        Console.WriteLine($"  Time received: {msg.ReceivedDateTime}");
+        Console.WriteLine($"  Content: {msg.BodyPreview}");
+        Console.WriteLine("");
         count++ ;
+        if (count == maximumTopK) {return false;}
         return true;
        }, 
        (req) => {return req;});
     await pagesIter.IterateAsync();
   }
 
-  public static async void deleteTopKMessageByDomain() {
+  public static async Task deleteTopKMessageByDomain() {
     _ = _graphServiceClient ?? throw new System.NullReferenceException("No graph service client");
     _messageIdsToDelete ??= new List<string> ();
     foreach (var messageId in _messageIdsToDelete) {

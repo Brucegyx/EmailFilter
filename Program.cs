@@ -18,7 +18,11 @@ while (waiting != 0) {
     Console.WriteLine("Do you want to delete above emails? Please enter 'Yes' or 'No'");
   }
   else {
-    Console.WriteLine("Please enter a domain name which you want to filter on, or enter q to quit.");
+    Console.WriteLine("Please enter a domain name on which you want to filter ");
+    Console.WriteLine("And a number of emails to display");
+    Console.WriteLine("In the format: <domain name> <number>");
+    Console.WriteLine("For example: enter '@microsoft.com 5' to get five emails sent from any address with domain microsoft.com");
+    Console.WriteLine("Or enter 'q' to quit.");
   }
   try {
     userInput = Console.ReadLine();
@@ -27,33 +31,41 @@ while (waiting != 0) {
     waiting = -1;
   }
   if (userInput is null) {
-    waiting = 0;
-    continue;
+    break;
   }
   if (userInput == "q") {
-    waiting = 0;
+    break;
   } 
-  else if (waiting == 1 && userInput == "Yes") {
+  if (waiting == 1 && userInput == "Yes") {
     try {
-      DeleteKEmailsByDomain();
+      await DeleteKEmailsByDomain();
       waiting = -1;
+      Console.WriteLine("Your selected emails were successfully deleted! ");
     }
     catch (Exception exception) {
       Console.WriteLine($"Error: {exception}");
     }
   } 
   else if (waiting == 1  && userInput == "No") {
-    waiting = 1;
+    waiting = -1;
   }
   else {
-    try {
-      ListKEmailsByDomain(2, userInput);
-      waiting = 1;
+    string[] inputs = userInput.Split(' ');
+    string domainToFilter = inputs[0];
+    try {    
+      int topK = int.Parse(inputs[1]);
+      await ListKEmailsByDomain(topK, domainToFilter);
+      waiting = 1; // indicate user to choose to delete the retreived emails
+    }
+    catch (FormatException ex) {
+      Console.WriteLine($"Format Error: input {inputs[1]} is not a valid number.");
+      waiting = -1;
     }
     catch (Exception exception) {
-      waiting = -1;
       Console.WriteLine($"Error: {exception}");
+      waiting = -1;
     }
+    
   }
 
 }
@@ -67,23 +79,18 @@ void InitializeGraph(Configurations configurations) {
   });
 }
 
-/*
-string ConstructDomainFilter(string userInput) {
-  return "";
-}
-*/
-void ListKEmailsByDomain(int topK , string domainFilter) {
+async Task ListKEmailsByDomain(int topK , string domainFilter) {
   try {
-    MSGraphMailService.getTopKMessageByDomain(topK, domainFilter);
+    await MSGraphMailService.getTopKMessageByDomain(topK, domainFilter);
   } 
   catch (Exception ex) {
     Console.WriteLine(ex.Message);
   }
 }
 
-void DeleteKEmailsByDomain() {
+async Task DeleteKEmailsByDomain() {
   try {
-    MSGraphMailService.deleteTopKMessageByDomain();
+    await MSGraphMailService.deleteTopKMessageByDomain();
   } 
   catch (Exception ex) {
     Console.WriteLine(ex.Message);
